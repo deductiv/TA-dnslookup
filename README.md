@@ -9,6 +9,7 @@
 - dnslookup_reverse
 - dnslookup_ptr (Same as _reverse but here for conventions)
 - dnslookup_ns
+- dnslookup_aaaa
 - dnslookup_txt
 - dnslookup_cname
 - dnslookup_alias
