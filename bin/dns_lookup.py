@@ -16,6 +16,10 @@ resolution package, then returns the CSV results for DNS entries.
 
 """
 
+# STDERR printing for python 3
+def eprint(*args, **kwargs):
+	print(*args, file=sys.stderr, **kwargs)
+
 def dns_lookup(query, record_type = 'A', server = None):
 	try:
 		record_type = record_type.upper()
@@ -70,32 +74,63 @@ def main():
 	except:
 		exit(1)
 
-	infile = sys.stdin
-	outfile = sys.stdout
 	in_field = args.field_list[0]
 	out_field = args.field_list[1]
+	error_field = "dns_error"
 
-	r = csv.DictReader(infile)
+	# Use STDIN if the hostname or IP are not passed via CLI
+	if in_field in list(args.__dict__.keys()) and args.__dict__[in_field] != '':
+		#eprint('Using CLI data')
+		data = [ in_field, 
+				  args.hostname]
+		r = csv.DictReader(data)
+		cli = True
+	else:
+		infile = sys.stdin
+		r = csv.DictReader(infile)
+		cli = False
+
+	outfile = sys.stdout
+
 	header = r.fieldnames
-	if not out_field in header:
-		header.append(out_field)
-	if not 'dns_error' in header:
-		header.append('dns_error')
-	w = csv.DictWriter(outfile, fieldnames=r.fieldnames)
+	required_fields = [in_field, out_field, error_field]
+	for required_field in required_fields:
+		if not required_field in header:
+			header.append(required_field)
+	w = csv.DictWriter(outfile, fieldnames=header)
 	w.writeheader()
 
 	for result in r:
+		eprint(result[in_field])
 		if in_field in list(result.keys()) and result[in_field] is not None and len(result[in_field])>0:
 			# Host was provided, add result
 			answers = dns_lookup(result[in_field], record_type=args.record_type, server=args.server)
-			for answer in answers:
-				if answer[0:5] == "Error":
-					result[out_field] = ""
-					result["dns_error"] = answer[6:]
-				else:
-					result[out_field] = answer
-					result["dns_error"] = ""
+			
+			if cli and len(answers) > 1:
+				mv_fields = [out_field, error_field]
+				for field in mv_fields:
+					result[field] = []
+				for answer in answers:
+					if answer[0:5] == "Error":
+						result[error_field].append(answer[6:])
+					else:
+						result[out_field].append(answer)
+
+				for field in mv_fields:
+					if len(result[field]) == 0:
+						result[field] = ""
+					elif len(result[field]) == 1:
+						result[field] = result[field][0]
+					elif len(result[field]) > 1:
+						result[field] = ';'.join(result[field])
 				w.writerow(result)
+			else:
+				for answer in answers:
+					if answer[0:5] == "Error":
+						result[error_field] = answer[6:]
+					else:
+						result[out_field] = answer
+					w.writerow(result)
 		else:
 			w.writerow(result)
 
