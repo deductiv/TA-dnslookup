@@ -3,18 +3,18 @@
 ## Enrich your Splunk searches with DNS query results for any record type from any DNS server.   
 
 
-### Lookups  
-- dnslookup
-- dnslookup_mx
-- dnslookup_reverse
+### Lookups (Fields)
+- dnslookup_a (hostname, ip, dns_error)
+- dnslookup_mx (hostname, mx, dns_error)
+- dnslookup_reverse (hostname, ip, dns_error)
 - dnslookup_ptr (Same as _reverse but here for conventions)
-- dnslookup_ns
-- dnslookup_aaaa
-- dnslookup_txt
-- dnslookup_cname
-- dnslookup_alias
-- dnslookup_soa
-- dnslookup_srv
+- dnslookup_ns (hostname, ns, dns_error)
+- dnslookup_aaaa (hostname, aaaa, dns_error)
+- dnslookup_txt (hostname, txt, dns_error)
+- dnslookup_cname (hostname, cname, dns_error)
+- dnslookup_alias (hostname, alias, dns_error)
+- dnslookup_soa (hostname, soa, dns_error)
+- dnslookup_srv (hostname, srv, dns_error)
 
 See transforms.conf for details.
 
