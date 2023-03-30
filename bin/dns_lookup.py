@@ -56,7 +56,7 @@ def dns_lookup(query, record_type = 'A', server = None):
 		sys.stderr.write("Does not resolve: " + str(query) + "\n")
 		return ["Error:NXDOMAIN"]
 	except BaseException as e:
-		sys.stderr.write("query=" + query + " error=\"" + str(e) + "\"\n")
+		sys.stderr.write("query=" + str(query) + " error=\"" + str(e) + "\"\n")
 		return ["Error:"+str(e)]
 
 def main():
