@@ -6,7 +6,7 @@ import argparse
 import dns.resolver
 from dns import reversename
 
-""" 
+"""
 
 Written by J.R. Murray
 Deductiv, Inc.
@@ -60,7 +60,7 @@ def dns_lookup(query, record_type = 'A', server = None):
 		return ["Error:"+str(e)]
 
 def main():
-	parser = argparse.ArgumentParser(prog='Splunk Add-On for DNS Resolution', description='Resolve DNS hostnames')
+	parser = argparse.ArgumentParser(prog='Add-On for DNS Lookup', description='Query DNS records')
 	parser.add_argument('-hostname', type=str, dest='hostname', default='',
 						help='Hostname or domain to resolve')
 	parser.add_argument('-server', type=str, default=None, dest='server',
@@ -101,7 +101,7 @@ def main():
 	w.writeheader()
 
 	for result in r:
-		eprint(result[in_field])
+		#eprint(result[in_field])
 		if in_field in list(result.keys()) and result[in_field] is not None and len(result[in_field])>0:
 			# Host was provided, add result
 			answers = dns_lookup(result[in_field], record_type=args.record_type, server=args.server)

@@ -1,7 +1,9 @@
-
-# Application-level permissions
-
 []
-access = read : [ * ], write : [ admin ]
+access = read : [ * ], write : [ admin, sc_admin ]
 export = system
 
+[views]
+export = none
+
+[savedsearches]
+export = none
